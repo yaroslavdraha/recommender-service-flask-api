@@ -1,13 +1,13 @@
 from _md5 import md5
 
 from bson import ObjectId
-from flask_jwt import jwt_required
+from flask_jwt_extended import jwt_required, get_jwt_identity
 from flask_restful import reqparse, abort, Resource
 from api.core.mongo import Mongo
 
 
 class User(Resource):
-    method_decorators = [jwt_required()]
+    method_decorators = [jwt_required]
 
     def get(self, id=None):
         if id is None:
@@ -24,6 +24,7 @@ class User(Resource):
         params = post_parser.parse_args()
 
         user = Mongo.db().users.find_one({'email': params['email']})
+
         if user:
             abort(400, message="User with this email already exist")
 

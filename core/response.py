@@ -41,9 +41,9 @@ class Response:
         # Map to array and convert ObjectId to string
         data = []
         if len(self.__data) and type(self.__data) is list:
-            data = [self.__convertItem(item) for item in self.__data]
+            data = [Response.convert_mongo_item(item) for item in self.__data]
         elif type(self.__data) is dict:
-            data.append(self.__convertItem(self.__data))
+            data.append(Response.convert_mongo_item(self.__data))
 
         return {
             "data": data,
@@ -52,7 +52,8 @@ class Response:
         }
 
     # Convert ObjectId object to string
-    def __convertItem(self, item):
-        if item['_id'] and type(item['_id']) == ObjectId:
+    @staticmethod
+    def convert_mongo_item(item):
+        if '_id' in item and type(item['_id']) == ObjectId:
             item['_id'] = str(item['_id'])
         return item
