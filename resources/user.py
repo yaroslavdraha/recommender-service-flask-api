@@ -1,19 +1,10 @@
-from _md5 import md5
+import hashlib
 
-from bson import ObjectId
-from flask_jwt_extended import jwt_required, get_jwt_identity
 from flask_restful import reqparse, abort, Resource
 from api.core.mongo import Mongo
 
 
 class User(Resource):
-    method_decorators = [jwt_required]
-
-    def get(self, id=None):
-        if id is None:
-            return Mongo.db().users.find({})
-        return Mongo.db().users.find_one({'_id': ObjectId(id)})
-
     def post(self):
         post_parser = reqparse.RequestParser()
         post_parser.add_argument('name', required=True)
@@ -34,9 +25,7 @@ class User(Resource):
         user = {
             "name": params['name'],
             "email": params['email'],
-            "password1": md5(params['password'])
+            "password": hashlib.md5(params['password'].encode('utf-8')).hexdigest()
         }
 
         return {'_id': Mongo.db().users.insert_one(user).inserted_id}
-
-
