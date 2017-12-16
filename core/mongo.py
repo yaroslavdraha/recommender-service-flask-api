@@ -2,6 +2,7 @@ from flask import current_app as app
 from flask_pymongo import PyMongo
 from api.config import DB_NAME, DB_PORT, DB_HOST, DB_USER, DB_PASS
 
+
 class Mongo:
     __connection = None
 

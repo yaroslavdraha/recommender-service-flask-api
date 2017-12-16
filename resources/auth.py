@@ -6,6 +6,12 @@ from api.core.mongo import Mongo
 from api.core.response import Response
 
 
+class UserJWT(object):
+    def __init__(self, id, username):
+        self.id = id
+        self.username = username
+
+
 # TODO: Refactor this functionality. Need to provide 2 tokens: access and refresh
 class Auth(Resource):
 
