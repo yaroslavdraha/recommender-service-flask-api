@@ -5,6 +5,14 @@ from api.core.mongo import Mongo
 
 
 class User(Resource):
+
+    def get(self, id=None):
+
+        if id is None:
+            abort(404, message="User id was not selected")
+
+        return Mongo.db().projects.find({'user_ref': id})
+
     def post(self):
         post_parser = reqparse.RequestParser()
         post_parser.add_argument('name', required=True)

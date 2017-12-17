@@ -6,6 +6,7 @@ from flask_cors import CORS
 from bson.json_util import dumps
 from api.config import JWT_SECRET_KEY, CUSTOM_ERROR
 from api.resources.auth import Auth
+from api.resources.project import Project
 from api.resources.user import User
 from api.core.response import Response
 
@@ -52,9 +53,10 @@ def output_json(data, code, headers=None):
 
 # -------------------------------- Routes -------------------------------------
 api.add_resource(Auth, '/auth', endpoint="auth")
-api.add_resource(User, '/users', endpoint="users")
-api.add_resource(User, '/users/<string:id>', endpoint="user")
 
+api.add_resource(User, '/users/<string:id>/projects', endpoint="user_projects")
+
+api.add_resource(Project, '/projects', endpoint="projects")
 
 # -------------------------------- Application bootstrap -------------------------------------
 if __name__ == '__main__':
