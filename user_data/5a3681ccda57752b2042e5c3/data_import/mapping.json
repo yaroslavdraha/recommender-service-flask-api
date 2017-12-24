@@ -1,5 +1,1 @@
-{
-  "transaction_id": "redundant",
-  "price": "redundant",
-  "item": "redundant"
-}
+{"item": "name", "product_group_id": "redundant", "transaction_id": "transaction_id", "product_url": "redundant", "price": "redundant"}

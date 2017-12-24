@@ -1,24 +1,30 @@
-from flask import request, url_for
-from flask_restful import reqparse, abort, Resource
-from flask import current_app as app
-
-import pandas as pd
-import json
 import ast
+import json
 import os
 
+import pandas as pd
+from flask import request, url_for
+from flask_restful import reqparse, abort, Resource
 from werkzeug.utils import secure_filename
 
-from api.recommender.data_process import AssociationRulesProcess
+from api.recommender.assoc_rules.assoc_rules_process import AssociationRulesProcess
+from api.recommender.assoc_rules.assoc_rules_resource import AssociationRulesResource
 
 
 class DataProcess(Resource):
     def post(self, action=None):
         if action == 'columns':
+            file_object = request.files.get('upload_file')
+            df = None
 
-            # TODO: Provide CSV loader
+            if file_object.filename.endswith('.csv'):
+                df = pd.read_csv(file_object)
+            if file_object.filename.endswith('.xlsx'):
+                df = pd.read_excel(file_object)
 
-            df = pd.read_excel(request.files.get('upload_file'))
+            if not df:
+                abort(404, message="File extension is incorrect")
+
             return {
                 'columns': list(df)
             }
@@ -27,23 +33,19 @@ class DataProcess(Resource):
             post_parser = reqparse.RequestParser()
             post_parser.add_argument('fields', required=True)
             post_parser.add_argument('project_ref', required=True)
+
             params = post_parser.parse_args()
 
-            # Write mapping.json
-            user_data_path = "user_data/" + params['project_ref'] + "/data_import"
-            os.makedirs(user_data_path, exist_ok=True)
-            with open(user_data_path + '/mapping.json', 'w') as outfile:
-                json.dump(ast.literal_eval(params['fields']), outfile)
-
-            # Write Import file
-            file = request.files['file']
-            filename = secure_filename(file.filename)
-            file.save(user_data_path + '/' + filename)
-
-            info = url_for('uploaded_file', filename=filename)
+            file_object = request.files.get('upload_file')
 
             # Run Data processing
-            a_rules = AssociationRulesProcess(project_id=params['project_ref'])
+            a_recource = AssociationRulesResource(
+                project_id=params['project_ref'],
+                file_object=file_object,
+                map_fields=json.loads(params['fields'])
+            )
+
+            a_rules = AssociationRulesProcess(a_recource)
             a_rules.run()
 
         return abort(404, message="Endpoint was not found")
