@@ -40,7 +40,7 @@ class Response:
 
         # Map to array and convert ObjectId to string
         data = []
-        if len(self.__data) and type(self.__data) is list:
+        if self.__data is not None and len(self.__data) and type(self.__data) is list:
             data = [Response.convert_mongo_item(item) for item in self.__data]
         elif type(self.__data) is dict:
             data.append(Response.convert_mongo_item(self.__data))

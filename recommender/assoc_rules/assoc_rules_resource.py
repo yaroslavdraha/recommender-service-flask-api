@@ -107,6 +107,13 @@ class AssociationRulesResource:
         data = pd.read_csv(self._user_data_path + "/collected.csv", sep=';')
         return data.to_dict('records')
 
+    def add_collected_data(self, transaction_data):
+        """
+        Add transaction information to collected.csv
+        """
+
+        pass
+
     def get_item_sets(self):
         """
         Get generated rules for current project

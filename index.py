@@ -8,6 +8,7 @@ from api.config import JWT_SECRET_KEY, CUSTOM_ERROR
 from api.resources.auth import Auth
 from api.resources.data_process import DataProcess
 from api.resources.project import Project
+from api.resources.recommendation import Recommendation
 from api.resources.user import User
 from api.core.response import Response
 
@@ -62,6 +63,8 @@ api.add_resource(Project, '/projects', endpoint="projects")
 
 api.add_resource(DataProcess, '/dataprocess/<string:action>', endpoint="dataprocess")
 api.add_resource(DataProcess, '/dataprocess/<string:project_id>/<string:action>', endpoint="get_data_sets")
+
+api.add_resource(Recommendation, '/recommendation', endpoint="recommendation")
 
 # -------------------------------- Application bootstrap -------------------------------------
 if __name__ == '__main__':

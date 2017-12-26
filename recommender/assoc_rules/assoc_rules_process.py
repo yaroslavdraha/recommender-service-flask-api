@@ -16,13 +16,23 @@ class AssociationRulesProcess:
         self.resource = resource
 
     def run(self):
+        # TODO: Implement case when imported file was not found, but we want to run process
         map_fields = self.resource.get_mapping()
         if map_fields:
             self._generate_rules(map_fields)
         else:
             abort(404, message="Mapping fields was not found, or something went wrong with fields save")
 
+    def add_transaction(self, transaction_data):
+        self.resource.add_collected_data(transaction_data)
+
+    def get_recommendation(self, items):
+        pass
+
     def _generate_rules(self, fields):
+        """
+        The main method for rules generation based on project, collected imported data
+        """
         file = self.resource.get_import_file()
 
         df_import = pd.DataFrame()
