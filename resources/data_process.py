@@ -22,8 +22,8 @@ class DataProcess(Resource):
             if file_object.filename.endswith('.xlsx'):
                 df = pd.read_excel(file_object)
 
-            if not df:
-                abort(404, message="File extension is incorrect")
+            if df.empty:
+                abort(415, message="File extension is incorrect")
 
             return {
                 'columns': list(df)
@@ -48,4 +48,16 @@ class DataProcess(Resource):
             a_rules = AssociationRulesProcess(a_recource)
             a_rules.run()
 
+            return []
+
         return abort(404, message="Endpoint was not found")
+
+    def get(self, project_id, action):
+        a_recource = AssociationRulesResource(project_id=project_id)
+
+        if action == 'collected_data':
+            return a_recource.get_collected_data()
+        elif action == 'itemsets':
+            return a_recource.get_item_sets()
+
+        return []

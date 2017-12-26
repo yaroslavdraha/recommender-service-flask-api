@@ -1,0 +1,8 @@
+antecedants;consequents;support;confidence;lift
+Curaga;Toster;0.3333333333333333;1.0;1.0
+Banan, Curaga;Toster;0.3333333333333333;1.0;1.0
+Toster, Curaga;Banan;0.3333333333333333;1.0;1.0
+Curaga;Banan, Toster;0.3333333333333333;1.0;1.0
+Banan;Toster;1.0;1.0;1.0
+Toster;Banan;1.0;1.0;1.0
+Curaga;Banan;0.3333333333333333;1.0;1.0

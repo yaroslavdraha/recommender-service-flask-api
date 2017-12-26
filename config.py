@@ -14,8 +14,8 @@ DB_PASS = "Zef77U66"
 # -------------------------------- Custom error messages -------------------------------------
 # http://werkzeug.pocoo.org/docs/0.13/exceptions/
 CUSTOM_ERROR = {
-    'NotFound': {
-        'message': "Recourse was not found",
-        'status': 404,
-    }
+    # 'NotFound': {
+    #     'message': "Recourse was not found",
+    #     'status': 404,
+    # }
 }

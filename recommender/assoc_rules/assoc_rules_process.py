@@ -1,25 +1,28 @@
 # Based on user_data/<project_id> class should generate data-sets
+from flask_restful import abort
 from mlxtend.frequent_patterns import apriori, association_rules
-
 from api.recommender.assoc_rules.assoc_rules_resource import AssociationRulesResource
 
 import pandas as pd
 
+
+# TODO:
+# 1) Functionality for Meta-data fields
+# 2) Give possibility to change support and lift by user
+# 3) Validation for field mapping
 
 class AssociationRulesProcess:
     def __init__(self, resource: AssociationRulesResource):
         self.resource = resource
 
     def run(self):
-
-        df = None
-
         map_fields = self.resource.get_mapping()
         if map_fields:
-            self._prepare_import_file(map_fields)
+            self._generate_rules(map_fields)
+        else:
+            abort(404, message="Mapping fields was not found, or something went wrong with fields save")
 
-    def _prepare_import_file(self, fields):
-        """Based on fle type need to load import data file"""
+    def _generate_rules(self, fields):
         file = self.resource.get_import_file()
 
         df_import = pd.DataFrame()
@@ -76,8 +79,10 @@ class AssociationRulesProcess:
         basket_sets = basket.applymap(encode_units)
 
         frequent_itemsets = apriori(basket_sets, min_support=0.2, use_colnames=True)
-        rules = association_rules(frequent_itemsets, metric="lift", min_threshold=1)
+        rules = association_rules(frequent_itemsets)
 
-        rules.to_csv(self.resource._user_data_path + "/rules.csv", encoding='utf-8', index=False,
+        rules['antecedants'] = rules['antecedants'].str.join(', ')
+        rules['consequents'] = rules['consequents'].str.join(', ')
+        rules.to_csv(self.resource._user_data_path + "/rules.csv",
+                     sep=';', index=False, encoding='utf-8',
                      columns=['antecedants', 'consequents', 'support', 'confidence', 'lift'])
-

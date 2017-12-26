@@ -1,8 +1,9 @@
-import ast
 import json
 import os
+import pandas as pd
 
 from werkzeug.utils import secure_filename
+from flask_restful import abort
 
 
 class AssociationRulesResource:
@@ -14,8 +15,8 @@ class AssociationRulesResource:
         :param map_fields
         """
 
-        self._map_fields = kwargs['map_fields']
-        self._file_object = kwargs['file_object']
+        self._map_fields = kwargs.get('map_fields')
+        self._file_object = kwargs.get('file_object')
         self._project_id = project_id
         self._user_data_path = "user_data/" + self._project_id
         self._user_data_import_path = "user_data/" + self._project_id + "/data_import"
@@ -51,6 +52,13 @@ class AssociationRulesResource:
 
             parsed[field_type].append(name)
 
+        # validation - at least one transaction_id and name
+        if not parsed.get('name'):
+            abort(415, message="You have to mark at least one field as Item name/description")
+
+        if not parsed.get('transaction_id'):
+            abort(415, message="You have to mark at least one field as Unique action ID")
+
         self._map_fields = parsed
         return parsed
 
@@ -82,12 +90,32 @@ class AssociationRulesResource:
         """
         Get collected transaction data from data_collected.csv
         """
-        path = self._user_data_path + '/data_collected.csv'
+        path = self._user_data_path + '/collected.csv'
 
-        if self._is_file_exist(path):
+        if self._is_file_exist('collected.csv'):
             return path
 
         return None
+
+    def get_collected_data(self):
+        """
+        Get collected via API data from csv file
+        """
+        if not self.get_collected_file_path():
+            return {}
+
+        data = pd.read_csv(self._user_data_path + "/collected.csv", sep=';')
+        return data.to_dict('records')
+
+    def get_item_sets(self):
+        """
+        Get generated rules for current project
+        """
+        if not self._is_file_exist('rules.csv'):
+            return []
+
+        rules = pd.read_csv(self._user_data_path + "/rules.csv", sep=';')
+        return rules.to_dict('records')
 
     def _write_map_fields(self):
         """Save json configuration for fields mapping to mapping.json appropriate file"""
