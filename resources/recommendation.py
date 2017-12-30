@@ -8,7 +8,6 @@ from api.recommender.assoc_rules.assoc_rules_resource import AssociationRulesRes
 
 
 class Recommendation(Resource):
-
     def post(self):
         post_parser = reqparse.RequestParser()
         post_parser.add_argument('transaction_id', required=True)
@@ -18,13 +17,13 @@ class Recommendation(Resource):
         # TODO: Get project_id from header or from Token
         project_id = "5a410660da57752e10f27178"
 
-        items = json.loads(params['items'])
+        transaction = {
+            'transaction_id': params['transaction_id'],
+            'items': json.loads(params['items'])
+        }
 
-        a = 1
-
-        # resource = AssociationRulesResource(project_id)
-        # assoc_rules = AssociationRulesProcess(resource)
-        # assoc_rules.add_transaction(items)
+        resource = AssociationRulesResource(project_id)
+        resource.add_collected_data(transaction)
 
     def get(self):
         args = request.args
@@ -42,4 +41,4 @@ class Recommendation(Resource):
 
         resource = AssociationRulesResource(project_id)
         assoc_rules = AssociationRulesProcess(resource)
-        assoc_rules.add_transaction(items)
+        assoc_rules.get_recommendation(items)

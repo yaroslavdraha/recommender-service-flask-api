@@ -60,6 +60,7 @@ api.add_resource(Auth, '/auth', endpoint="auth")
 api.add_resource(User, '/users/<string:id>/projects', endpoint="user_projects")
 
 api.add_resource(Project, '/projects', endpoint="projects")
+api.add_resource(Project, '/projects/<string:action>/<string:project_id>', endpoint="projects_data")
 
 api.add_resource(DataProcess, '/dataprocess/<string:action>', endpoint="dataprocess")
 api.add_resource(DataProcess, '/dataprocess/<string:project_id>/<string:action>', endpoint="get_data_sets")
