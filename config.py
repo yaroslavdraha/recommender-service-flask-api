@@ -4,11 +4,11 @@ BASE_URL = "http://localhost:5000"
 JWT_SECRET_KEY = "ZqweJasd89123"
 
 # Connection properties
-DB_NAME = "personalization-service"
-DB_HOST = "ds127536.mlab.com"
-DB_PORT = 27536
-DB_USER = "python-api"
-DB_PASS = "Zef77U66"
+DB_NAME = ""
+DB_HOST = ""
+DB_PORT = ""
+DB_USER = ""
+DB_PASS = ""
 
 
 # -------------------------------- Custom error messages -------------------------------------
